@@ -8,65 +8,48 @@
 
 <body>
 <div id="chart"></div>
-<br>
-<br>
-<hr>
-<br>
-<div id="chart2"></div>
-
 
 <script>
-    var chart = c3.generate({
-        bindto: '#chart',
-        data: {
-            columns: [
-                ['sample', 30, 200, 100, 400, 150, 250]
-            ],
-            regions: {
-                sample: [{start: 2, end: 3}]
-            }
-        },
-        regions: [{start: 2, end: 3}]
-    });
-
-    var chart2 = c3.generate({
-        bindto: '#chart2',
-        data: {
-            x: 'date',
-            columns: [
-                ['date', '2014-01-01', '2014-01-10', '2014-01-20', '2014-01-30', '2014-02-01'],
-                ['sample', 30, 200, 100, 400, 150, 250]
-            ]
-        },
-        axis: {
-            x: {
-                type: 'timeseries',
-                tick: {
-                    format: '%Y/%m/%d'
+// creacion de la grafica a partir de los datos del GET
+$(document).ready(function(){
+    var x = $.ajax({
+       url: 'http://localhost:5000/MAPA/1',
+       dataType: 'text',
+       type: 'GET',
+       async: true
+      });
+      x.done(function(data){
+        data = JSON.parse(data);
+        fechas = data.fechas;
+        presiones = data.presiones
+        console.log(data.fechas);
+        var chart2 = c3.generate({
+            bindto: '#chart',
+            data: {
+                x: 'date',
+                xFormat: '%d/%m/%Y %H:%M:%S',
+                columns: [
+                    fechas,
+                    presiones
+                ]
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%H:%M'
+                    }
                 }
-            }
-        },
-        regions: [
-            {start: '2014-01-05', end: '2014-01-10'},
-//        {start: new Date('2014-01-10'), end: new Date('2014-01-15')},
-            {start: 1390608000000, end: 1391040000000}
-        ]
-    });
-    $(document).ready(function(){
-        $("#button").click(function(){
-          var x = $.ajax({
-             url: 'http://localhost:5000/get_mapa/1',
-             dataType: 'text',
-             type: 'GET'
-            });
-            x.done(function(data){ console.log(data); alert(data); });
+            },
+            regions: [
+                {start: '27/08/2015 20:00:00', end: '28/08/2015 04:00:00'},
+    //        {start: new Date('2014-01-10'), end: new Date('2014-01-15')},
+                {start: 1390608000000, end: 1391040000000}
+            ]
         });
-    });
-
+      });
+});
 </script>
-
-<button id="button">enviar get_mapa</button>
-
 
 </body>
 </html>
