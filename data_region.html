@@ -5,9 +5,17 @@
     <script src="c3.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
+<style>
+.c3-region.region-dormido {
+  fill: black;
+}
 
+.c3-ygrid-line line {
+    stroke: red;
+}
+</style>
 <body>
-<div id="chart"></div>
+<div id="presion"></div>
 
 <script>
 // creacion de la grafica a partir de los datos del GET
@@ -21,17 +29,31 @@ $(document).ready(function(){
       x.done(function(data){
         data = JSON.parse(data);
         fechas = data.fechas;
-        presiones = data.presiones
-        console.log(data.fechas);
+        frecuencias = data.frecuencias
+        console.log(data.frecuencias);
         var chart2 = c3.generate({
-            bindto: '#chart',
+            bindto: '#presion',
+            color: {
+                pattern: ['#ab7b0e', '#363FBC', '#B73540', '#B73540']
+            },
             data: {
                 x: 'date',
                 xFormat: '%d/%m/%Y %H:%M:%S',
                 columns: [
                     fechas,
-                    presiones
+                    frecuencias
                 ]
+            },
+            grid: {
+                x: {
+                    show: true
+                },
+                y: {
+                    show: true,
+                    lines: [
+                        {value: 100, text: 'Valor normal de la presion', position: 'middle', class: 'normal'}
+                    ]
+                }
             },
             axis: {
                 x: {
@@ -42,9 +64,7 @@ $(document).ready(function(){
                 }
             },
             regions: [
-                {start: '27/08/2015 20:00:00', end: '28/08/2015 04:00:00'},
-    //        {start: new Date('2014-01-10'), end: new Date('2014-01-15')},
-                {start: 1390608000000, end: 1391040000000}
+                {start: '27/08/2015 20:00:00', end: '28/08/2015 04:00:00', class: 'region-dormido'}
             ]
         });
       });
