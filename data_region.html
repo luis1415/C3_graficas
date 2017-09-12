@@ -11,11 +11,16 @@
 }
 
 .c3-ygrid-line line {
-    stroke: red;
+    stroke: "#E78C77";
 }
 </style>
 <body>
-<div id="presion"></div>
+<div id="presiones"></div>
+<br>
+<hr>
+<br>
+<div id="frecuencia"></div>
+
 
 <script>
 // creacion de la grafica a partir de los datos del GET
@@ -29,12 +34,15 @@ $(document).ready(function(){
       x.done(function(data){
         data = JSON.parse(data);
         fechas = data.fechas;
-        frecuencias = data.frecuencias
-        console.log(data.frecuencias);
+        frecuencias = data.frecuencias;
+        presion_sistolica = data.presion_sistolica;
+        presion_diastolica = data.presion_diastolica;
+
+        //grafica de frecuencia
         var chart2 = c3.generate({
-            bindto: '#presion',
+            bindto: '#frecuencia',
             color: {
-                pattern: ['#ab7b0e', '#363FBC', '#B73540', '#B73540']
+                pattern: ['#f9b70e']
             },
             data: {
                 x: 'date',
@@ -49,9 +57,46 @@ $(document).ready(function(){
                     show: true
                 },
                 y: {
+                    show: true
+                }
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%H:%M'
+                    }
+                }
+
+            },
+            regions: [
+                {start: '27/08/2015 21:00:00', end: '28/08/2015 05:00:00', class: 'region-dormido'}
+            ]
+        });
+
+        //grafica de presiones
+        var chart2 = c3.generate({
+            bindto: '#presiones',
+            color: {
+                pattern: ['#118d62', '#118d62']
+            },
+            data: {
+                x: 'date',
+                xFormat: '%d/%m/%Y %H:%M:%S',
+                columns: [
+                    fechas,
+                    presion_sistolica,
+                    presion_diastolica
+                ]
+            },
+            grid: {
+                x: {
+                    show: true
+                },
+                y: {
                     show: true,
                     lines: [
-                        {value: 100, text: 'Valor normal de la presion', position: 'middle', class: 'normal'}
+                        {value: 130, text: 'PA normal', position: 'middle', class: 'normal_alta'}
                     ]
                 }
             },
@@ -64,12 +109,11 @@ $(document).ready(function(){
                 }
             },
             regions: [
-                {start: '27/08/2015 20:00:00', end: '28/08/2015 04:00:00', class: 'region-dormido'}
+                {start: '27/08/2015 21:00:00', end: '28/08/2015 05:00:00', class: 'region-dormido'}
             ]
         });
       });
 });
 </script>
-
 </body>
 </html>
